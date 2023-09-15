@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
+  final VoidCallback onLogin;
+
+  LoginScreen({required this.onLogin});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -8,31 +12,43 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
+  String _errorMessage = '';
 
   void _login() {
     final login = _loginController.text;
     final password = _passwordController.text;
 
-    // Você pode adicionar a lógica de autenticação aqui.
-    // Por enquanto, apenas exibiremos os valores digitados.
-    print('Login: $login');
-    print('Senha: $password');
+    // Verifique as credenciais de login
+    if (login == 'Thalita' && password == 'Tata1904*') {
+      // Credenciais corretas, chame a função onLogin
+      widget.onLogin();
+      setState(() {
+        _errorMessage = ''; // Limpe a mensagem de erro se existir
+      });
+    } else {
+      // Credenciais incorretas, exiba uma mensagem de erro
+      setState(() {
+        _errorMessage = 'Credenciais incorretas. Tente novamente.';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Tela de Login'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0.0),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          // Imagem de fundo
           Image.asset(
-            'assets/Authentication-bro.png',  // Substitua pelo caminho da sua imagem
+            'assets/Authentication-bro.png',
             fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -43,6 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _loginController,
                   decoration: InputDecoration(
                     labelText: 'Login',
+                    filled: true,
+                    fillColor: Colors.white70,
                   ),
                 ),
                 SizedBox(height: 16.0),
@@ -51,12 +69,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Senha',
+                    filled: true,
+                    fillColor: Colors.white70,
                   ),
                 ),
                 SizedBox(height: 24.0),
                 ElevatedButton(
                   onPressed: _login,
                   child: Text('Entrar'),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  _errorMessage,
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
                 ),
               ],
             ),

@@ -1,36 +1,39 @@
 import 'package:flutter/material.dart';
-//import 'login_screen.dart';
+import 'home.dart';
+import 'login_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _isLoggedIn = false;
+
+  void _login() {
+    setState(() {
+      _isLoggedIn = true;
+    });
+  }
+
+  void _logout() {
+    setState(() {
+      _isLoggedIn = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentScreen =
+        _isLoggedIn ? HomeScreen(onLogout: _logout) : LoginScreen(onLogin: _login);
+
     return MaterialApp(
       title: 'Meu App',
-      home: LoginScreen(), // Tela de login como tela inicial
-    );
-  }
-}
-
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  // TODO: Adicione aqui a implementação da tela de login
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tela de Login'),
-      ),
-      body: Center(
-        child: Text('Implemente a tela de login aqui.'),
-      ),
+      home: currentScreen,
     );
   }
 }
