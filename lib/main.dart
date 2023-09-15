@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'login_screen.dart';
+import 'package:planner/home.dart';
+import 'package:planner/login_screen.dart';
+//import 'package:sqflite/sqflite.dart'; // Importe o sqflite
 
 void main() {
   runApp(MyApp());
