@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -7,11 +6,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _storage = FlutterSecureStorage();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _login() async {
+  void _login() {
     final login = _loginController.text;
     final password = _passwordController.text;
 
@@ -24,6 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Tela de Login'),
+      ),
       body: Stack(
         children: [
           // Imagem de fundo
@@ -33,39 +34,31 @@ class _LoginScreenState extends State<LoginScreen> {
             width: double.infinity,
             height: double.infinity,
           ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Card(
-                elevation: 4.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        controller: _loginController,
-                        decoration: InputDecoration(
-                          labelText: 'Login',
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Senha',
-                        ),
-                      ),
-                      SizedBox(height: 24.0),
-                      ElevatedButton(
-                        onPressed: _login,
-                        child: Text('Entrar'),
-                      ),
-                    ],
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: _loginController,
+                  decoration: InputDecoration(
+                    labelText: 'Login',
                   ),
                 ),
-              ),
+                SizedBox(height: 16.0),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Senha',
+                  ),
+                ),
+                SizedBox(height: 24.0),
+                ElevatedButton(
+                  onPressed: _login,
+                  child: Text('Entrar'),
+                ),
+              ],
             ),
           ),
         ],
