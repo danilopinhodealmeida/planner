@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planner/home.dart';
 import 'package:planner/login_screen.dart';
-//import 'package:sqflite/sqflite.dart'; // Importe o sqflite
+import 'app_theme.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,11 +30,23 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final currentScreen =
-        _isLoggedIn ? HomeScreen(onLogout: _logout) : LoginScreen(onLogin: _login);
+        _isLoggedIn ? HomeScreen() : LoginScreen(onLogin: _login);
 
     return MaterialApp(
       title: 'Meu App',
-      home: currentScreen,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Meu App'),
+          actions: [
+            if (_isLoggedIn)
+              IconButton(
+                icon: Icon(Icons.exit_to_app),
+                onPressed: _logout,
+              ),
+          ],
+        ),
+        body: currentScreen,
+      ),
     );
   }
 }

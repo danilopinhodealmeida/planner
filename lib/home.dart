@@ -1,173 +1,91 @@
 import 'package:flutter/material.dart';
+import 'model.dart';
+import 'database_repository.dart';
 import 'note.dart';
+import 'todo_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  final VoidCallback onLogout;
-
-  HomeScreen({required this.onLogout});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Note> _notes = [];
+  @override
+  void initState() {
+    initDb();
+    getTodos();
+    super.initState();
+  }
 
+  void initDb() async {
+    await DatabaseRepository.instance.database;
+  }
+
+  List<ToDoModel> myTodos = [];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Planner Digital'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: widget.onLogout,
+    return RefreshIndicator(
+      onRefresh: () async {
+        getTodos();
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.black,
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
           ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
+          onPressed: gotoAddScreen,
+        ),
+        appBar: AppBar(
+          title: const Text('My todos'),
+        ),
+        body: myTodos.isEmpty
+            ? const Center(child: const Text('You don\'t have any todos yet'))
+            : ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 20,
                 ),
-                itemCount: _notes.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildTaskCard(context, _notes[index]);
+                padding: EdgeInsets.all(16),
+                itemBuilder: (context, index) {
+                  final todo = myTodos[index];
+                  return TodoWidget(
+                    todo: todo,
+                    onDeletePressed: () {
+                      delete(todo: todo, context: context);
+                      getTodos();
+                    },
+                  );
                 },
+                itemCount: myTodos.length,
               ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Abre a tela de adição de nota
-          _goToAddNoteScreen(context);
-        },
-        child: Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildTaskCard(BuildContext context, Note note) {
-    return Card(
-      child: ListTile(
-        title: Text(note.title),
-        subtitle: Text(note.description),
-        trailing: Checkbox(
-          value: note.isDone,
-          onChanged: (value) {
-            setState(() {
-              if (value != null) {
-                value ? note.markAsDone() : note.markAsUndone();
-              }
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  void _goToAddNoteScreen(BuildContext context) async {
-    final newNote = await Navigator.of(context).push<Note>(
-      MaterialPageRoute(
-        builder: (context) => AddNoteScreen(), // Crie a tela de adição de nota aqui
-      ),
-    );
-
-    if (newNote != null) {
+  void getTodos() async {
+    await DatabaseRepository.instance.getAllTodos().then((value) {
       setState(() {
-        _notes.add(newNote);
+        myTodos = value;
       });
-    }
-  }
-}
-
-class AddNoteScreen extends StatefulWidget {
-  @override
-  _AddNoteScreenState createState() => _AddNoteScreenState();
-}
-
-class _AddNoteScreenState extends State<AddNoteScreen> {
-  // Controladores para os campos de entrada
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  bool _isPriority = false;
-  DateTime _dueDate = DateTime.now();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Adicionar Nota'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Título:'),
-            TextField(controller: _titleController),
-            SizedBox(height: 16),
-            Text('Descrição:'),
-            TextField(controller: _descriptionController),
-            SizedBox(height: 16),
-            Text('Data de Vencimento:'),
-            ElevatedButton(
-              onPressed: () async {
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: _dueDate,
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
-                );
-                if (selectedDate != null && selectedDate != _dueDate) {
-                  setState(() {
-                    _dueDate = selectedDate;
-                  });
-                }
-              },
-              child: Text('Selecionar Data'),
-            ),
-            SizedBox(height: 16),
-            Text('Prioridade:'),
-            Checkbox(
-              value: _isPriority,
-              onChanged: (value) {
-                setState(() {
-                  _isPriority = value ?? false;
-                });
-              },
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Crie a nota com os dados inseridos
-                final newNote = Note.createNew(
-                  title: _titleController.text,
-                  description: _descriptionController.text,
-                  dueDate: _dueDate,
-                  isPriority: _isPriority,
-                );
-                // Retorne a nota para a tela anterior
-                Navigator.of(context).pop(newNote);
-              },
-              child: Text('Adicionar Nota'),
-            ),
-          ],
-        ),
-      ),
-    );
+    }).catchError((e) => debugPrint(e.toString()));
   }
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
+  void gotoAddScreen() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return AddTodoScreen();
+    }));
+  }
+
+  void delete({required ToDoModel todo, required BuildContext context}) async {
+    DatabaseRepository.instance.delete(todo.id!).then((value) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Deleted')));
+    }).catchError((e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    });
   }
 }

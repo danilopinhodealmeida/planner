@@ -1,39 +1,103 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'model.dart';
+import 'database_repository.dart';
 
-class Note {
-  final String title;
-  final String description;
-  final DateTime dueDate;
-  final bool isPriority;
-  bool isDone;
+class AddTodoScreen extends StatefulWidget {
+  ToDoModel? todo;
+  AddTodoScreen({Key? key, this.todo}) : super(key: key);
 
-  Note({
-    required this.title,
-    required this.description,
-    required this.dueDate,
-    required this.isPriority,
-    this.isDone = false,
-  });
+  @override
+  State<AddTodoScreen> createState() => _AddTodoScreenState();
+}
 
-  void markAsDone() {
-    isDone = true;
+class _AddTodoScreenState extends State<AddTodoScreen> {
+  bool important = false;
+  final titleController = TextEditingController();
+  final subtitleControler = TextEditingController();
+
+  @override
+  void initState() {
+    addTodoData();
+    super.initState();
   }
 
-  void markAsUndone() {
-    isDone = false;
+  @override
+  void dispose() {
+    titleController.dispose();
+    subtitleControler.dispose();
+    super.dispose();
   }
 
-  static Note createNew({
-    required String title,
-    required String description,
-    required DateTime dueDate,
-    required bool isPriority,
-  }) {
-    return Note(
-      title: title,
-      description: description,
-      dueDate: dueDate,
-      isPriority: isPriority,
+  void addTodoData() {
+    if (widget.todo != null) {
+      if (mounted)
+        setState(() {
+          titleController.text = widget.todo!.title;
+          subtitleControler.text = widget.todo!.describtion;
+          important = widget.todo!.isImportant;
+        });
+    }
+  }
+
+  void addTodo() async {
+    ToDoModel todo = ToDoModel(
+        title: titleController.text,
+        describtion: subtitleControler.text,
+        isImportant: important);
+    if (widget.todo == null) {
+      await DatabaseRepository.instance.insert(todo: todo);
+    } else {
+      await DatabaseRepository.instance.update(todo);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add todo'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextFormField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                  label: const Text('Todo title'),
+                  hintText: 'Develop amazing app '),
+            ),
+            const SizedBox(
+              height: 36,
+            ),
+            TextFormField(
+              controller: subtitleControler,
+              decoration: const InputDecoration(
+                label: const Text('Todo subtitle'),
+              ),
+            ),
+            SwitchListTile.adaptive(
+              title: Text('is your todo really important'),
+              value: important,
+              onChanged: (value) => setState(
+                () {
+                  important = value;
+                },
+              ),
+            ),
+            MaterialButton(
+              color: Colors.black,
+              height: 50,
+              minWidth: double.infinity,
+              onPressed: addTodo,
+              child: Text(
+                widget.todo == null ? 'Add todo' : 'Update Todo',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
