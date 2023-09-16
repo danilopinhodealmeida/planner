@@ -34,16 +34,22 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       title: 'Meu App',
+      theme: appTheme,
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Meu App'),
-          actions: [
-            if (_isLoggedIn)
-              IconButton(
-                icon: Icon(Icons.exit_to_app),
-                onPressed: _logout,
-              ),
-          ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0.0),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text('Meu App'),
+            actions: [
+              if (_isLoggedIn)
+                IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: _logout,
+                ),
+            ],
+          ),
         ),
         body: currentScreen,
       ),
