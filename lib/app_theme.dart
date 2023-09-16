@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 final appTheme = ThemeData(
-  primarySwatch: Colors.brown,
+  primarySwatch: Colors.pink,
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,

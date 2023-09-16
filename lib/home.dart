@@ -3,7 +3,6 @@ import 'model.dart';
 import 'database_repository.dart';
 import 'note.dart';
 import 'todo_widget.dart';
-import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
         _isLoggedIn ? HomeScreen() : LoginScreen(onLogin: _login);
 
     return MaterialApp(
-      title: 'Meu App',
+      title: 'Planner da Thalita',
       theme: appTheme,
       home: Scaffold(
         appBar: PreferredSize(
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: Text('Meu App'),
+            title: Text('Planner da Thalita'),
             actions: [
               if (_isLoggedIn)
                 IconButton(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onLogin;
