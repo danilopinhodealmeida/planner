@@ -30,7 +30,7 @@ class TodoWidget extends StatelessWidget {
             onPressed: onDeletePressed,
             icon: Icon(
               Icons.delete_outline,
-              color: Colors.red,
+              color: Colors.pink,
             ),
           ),
           trailing: todo.isImportant == true
