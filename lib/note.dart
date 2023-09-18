@@ -40,22 +40,26 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   }
 
   void addTodo() async {
-    ToDoModel todo = ToDoModel(
-        title: titleController.text,
-        describtion: subtitleControler.text,
-        isImportant: important);
-    if (widget.todo == null) {
-      await DatabaseRepository.instance.insert(todo: todo);
-    } else {
-      await DatabaseRepository.instance.update(todo);
-    }
+  ToDoModel todo = ToDoModel(
+    title: titleController.text,
+    describtion: subtitleControler.text,
+    isImportant: important,
+  );
+  if (widget.todo == null) {
+    await DatabaseRepository.instance.insert(todo: todo);
+  } else {
+    await DatabaseRepository.instance.update(todo);
   }
+  // Após adicionar ou atualizar a tarefa, navegue de volta para a tela principal.
+  Navigator.pop(context);
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add todo'),
+        title: const Text('Adicionar tarefa'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -64,8 +68,8 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
             TextFormField(
               controller: titleController,
               decoration: const InputDecoration(
-                  label: const Text('Todo title'),
-                  hintText: 'Develop amazing app '),
+                  label: const Text('Título'),
+                  hintText: 'Seu título'),
             ),
             const SizedBox(
               height: 36,
@@ -73,11 +77,11 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
             TextFormField(
               controller: subtitleControler,
               decoration: const InputDecoration(
-                label: const Text('Todo subtitle'),
+                label: const Text('Subtítulo'),
               ),
             ),
             SwitchListTile.adaptive(
-              title: Text('is your todo really important'),
+              title: Text('É importante?'),
               value: important,
               onChanged: (value) => setState(
                 () {
@@ -86,12 +90,12 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
               ),
             ),
             MaterialButton(
-              color: Colors.black,
+              color: Colors.pink,
               height: 50,
               minWidth: double.infinity,
               onPressed: addTodo,
               child: Text(
-                widget.todo == null ? 'Add todo' : 'Update Todo',
+                widget.todo == null ? 'Adicionar tarefa' : 'Atualizar tarefa',
                 style: TextStyle(color: Colors.white),
               ),
             ),

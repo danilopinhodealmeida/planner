@@ -19,9 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void initDb() async {
-    await DatabaseRepository.instance.database;
-  }
+void initDb() async {
+  await DatabaseRepository.instance.initDatabase(); // Chame o método initDatabase
+}
 
   List<ToDoModel> myTodos = [];
   @override
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.pink,
           child: Icon(
             Icons.add,
             color: Colors.white,
@@ -40,10 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: gotoAddScreen,
         ),
         appBar: AppBar(
-          title: const Text('My todos'),
+          title: const Text('Planner da Thalita'),
         ),
         body: myTodos.isEmpty
-            ? const Center(child: const Text('You don\'t have any todos yet'))
+            ? const Center(child: const Text('Você não tem nada adicionado'))
             : ListView.separated(
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 20,
@@ -73,11 +73,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }).catchError((e) => debugPrint(e.toString()));
   }
 
-  void gotoAddScreen() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddTodoScreen();
-    }));
+  void gotoAddScreen() async {
+  final result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return AddTodoScreen();
+  }));
+
+  // Após retornar da tela de adição/atualização, recarregue a lista de tarefas.
+  if (result == true) {
+    getTodos();
   }
+}
+
 
   void delete({required ToDoModel todo, required BuildContext context}) async {
     DatabaseRepository.instance.delete(todo.id!).then((value) {
