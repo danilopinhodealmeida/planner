@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     // Verifique as credenciais de login
-    if (login == 'Thalita' && password == 'Tata1904*') {
+    if (login == 'USER' && password == 'Test123') { // retiramos a forma mais segura de login para essa simples
       // Credenciais corretas, chame a função onLogin
       widget.onLogin();
       setState(() {
