@@ -1,16 +1,23 @@
-# planner
+# Planner
 
-A new Flutter project.
+Bem-vindo ao meu projeto Planner! 
+Este é um aplicativo simples de planejamento de tarefas desenvolvido em Flutter, que permite ao usuário criar, visualizar e gerenciar suas listas de afazeres de maneira eficiente.
 
-## Getting Started
+## Funcionalidades Principais
 
-This project is a starting point for a Flutter application.
+- **Adição de Tarefas**: Crie facilmente novas tarefas com uma descrição detalhada.
+- **Marcadores de Prioridade**: Atribua prioridades às suas tarefas para identificar o que precisa ser feito primeiro.
+- **Concluído ou Pendente**: Marque as tarefas como concluídas quando finalizadas.
+- **Organização Intuitiva**: Visualize suas tarefas por data de criação, prioridade ou status de conclusão.
 
-A few resources to get you started if this is your first Flutter project:
+Contribuições
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Contribuições são bem-vindas! Se você encontrar algum problema ou tiver sugestões para melhorar o aplicativo, sinta-se à vontade para abrir uma issue ou enviar um pull request.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Licença
+
+Este projeto é licenciado sob a Licença MIT.
+
+Aproveite o planejamento simplificado com o Planner! Se tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato.
+
+Happy coding! 🚀
